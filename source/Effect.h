@@ -2,6 +2,8 @@
 
 #include "Texture.h"
 
+using namespace dae;
+
 class Effect {
 public:
 	Effect(ID3D11Device* pDevice, const std::wstring& path);
@@ -14,10 +16,10 @@ public:
 	void Initialize();
 	static ID3DX11Effect* LoadEffect(ID3D11Device* pDevice, const std::wstring& assetFile);
 
-	virtual void SetDiffuseMap(Texture_Software* pDiffuseTexture) = 0;
-	virtual void SetNormalMap(Texture_Software* pNormalTexture) {};
-	virtual void SetSpecularMap(Texture_Software* pSpecularTexture) {};
-	virtual void SetGlossinessMap(Texture_Software* pGlossinessTexture) {};
+	virtual void SetDiffuseMap(Texture* pDiffuseTexture) = 0;
+	virtual void SetNormalMap(Texture* pNormalTexture) {};
+	virtual void SetSpecularMap(Texture* pSpecularTexture) {};
+	virtual void SetGlossinessMap(Texture* pGlossinessTexture) {};
 
 	enum SampleState {
 		Point,
@@ -67,7 +69,7 @@ public:
 	void BuildInputLayout() override;
 	void LoadEffectVariable() override;
 
-	void SetDiffuseMap(Texture_Software* pDiffuseTexture) override;
+	void SetDiffuseMap(Texture* pDiffuseTexture) override;
 private:
 	ID3DX11EffectShaderResourceVariable* m_pDiffuseMapVariable{};
 };
@@ -79,8 +81,8 @@ public:
 	void BuildInputLayout() override;
 	void LoadEffectVariable() override;
 
-	void SetDiffuseMap(Texture_Software* pDiffuseTexture) override;
-	void SetNormalMap(Texture_Software* pNormalTexture) override;
-	void SetSpecularMap(Texture_Software* pSpecularTexture) override;
-	void SetGlossinessMap(Texture_Software* pGlossinessTexture) override;
+	void SetDiffuseMap(Texture* pDiffuseTexture) override;
+	void SetNormalMap(Texture* pNormalTexture) override;
+	void SetSpecularMap(Texture* pSpecularTexture) override;
+	void SetGlossinessMap(Texture* pGlossinessTexture) override;
 };

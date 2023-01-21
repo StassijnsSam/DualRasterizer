@@ -4,34 +4,31 @@ using namespace dae;
 
 #include "Math.h"
 #include "vector"
-#include "Texture_Software.h"
+#include "Texture.h"
 
 
 struct Vertex_In
 {
 	Vector3 position{};
-	ColorRGB color{colors::White};
 	Vector2 uv{};
 	Vector3 normal{};
 	Vector3 tangent{};
-	Vector3 viewDirection{};
 
 	bool operator==(Vertex_In other) {
-		return other.position == position && other.color == color;
+		return other.position == position;
 	}
 };
 
 struct Vertex_Out
 {
 	Vector4 position{};
-	ColorRGB color{ colors::White };
 	Vector2 uv{};
 	Vector3 normal{};
 	Vector3 tangent{};
 	Vector3 viewDirection{};
 
 	bool operator==(Vertex_Out other) {
-		return other.position == position && other.color == color;
+		return other.position == position;
 	}
 };
 
@@ -43,7 +40,7 @@ enum class PrimitiveTopology
 
 struct Mesh {
 	Mesh(std::vector<Vertex_In>& verticesIn, std::vector<uint32_t>& indicesIn, Vector3& translation, Vector3& scale,
-		float yawRotation, std::vector<Texture_Software*> pTexturesIn) {
+		float yawRotation, std::vector<Texture*> pTexturesIn) {
 		vertices = verticesIn;
 		indices = indicesIn;
 		Translate(translation);
@@ -71,7 +68,7 @@ struct Mesh {
 	float totalYaw{};
 
 	//Diffuse, Normal, Specular, Glossiness
-	std::vector<dae::Texture_Software*> pTextures{};
+	std::vector<dae::Texture*> pTextures{};
 
 	void Translate(const dae::Vector3& translation) {
 		translationTransform = Matrix::CreateTranslation(translation);

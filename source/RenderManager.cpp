@@ -22,6 +22,7 @@ namespace dae {
 
 		//Create the different renderers
 		m_pRendererSoftware = new Renderer_Software(pWindow, m_pCamera, m_pMeshes);
+		m_pRendererHardware = new Renderer_Hardware(pWindow, m_pCamera, m_pMeshes);
 		m_pCurrentRenderer = m_pRendererSoftware;
 	}
 
@@ -37,6 +38,9 @@ namespace dae {
 
 		delete m_pRendererSoftware;
 		m_pRendererSoftware = nullptr;
+
+		delete m_pRendererHardware;
+		m_pRendererHardware = nullptr;
 	}
 
 	void RenderManager::Update(const Timer* pTimer)
@@ -57,25 +61,40 @@ namespace dae {
 	}
 	void RenderManager::LoadMeshes()
 	{
+		//Initial transform
+		Vector3 translation{ 0, 0, 50.f };
+		Vector3 scale{ 1, 1, 1 };
+		float yawRotation = 90.f * TO_RADIANS;
+		
 		//Vehicle
 		//vertices, indices, translation, scale, rotation, textures
 		std::vector<Vertex_In> vertices{};
 		std::vector<uint32_t> indices{};
 		Utils::ParseOBJ("Resources/vehicle.obj", vertices, indices);
-		Vector3 translation{0, 0, 50.f};
-		Vector3 scale{ 1, 1, 1 };
-		float yawRotation = 90.f * TO_RADIANS;
 		//load needed textures
-		std::vector<Texture_Software*> pTextures{};
-		Texture_Software* pDiffuse = Texture_Software::LoadFromFile("Resources/vehicle_diffuse.png");
-		Texture_Software* pNormal = Texture_Software::LoadFromFile("Resources/vehicle_normal.png");
-		Texture_Software* pSpecular = Texture_Software::LoadFromFile("Resources/vehicle_specular.png");
-		Texture_Software* pGloss = Texture_Software::LoadFromFile("Resources/vehicle_gloss.png");
+		std::vector<Texture*> pTextures{};
+		Texture* pDiffuse = Texture::LoadFromFile("Resources/vehicle_diffuse.png");
+		Texture* pNormal = Texture::LoadFromFile("Resources/vehicle_normal.png");
+		Texture* pSpecular = Texture::LoadFromFile("Resources/vehicle_specular.png");
+		Texture* pGloss = Texture::LoadFromFile("Resources/vehicle_gloss.png");
 		pTextures.push_back(pDiffuse);
 		pTextures.push_back(pNormal);
 		pTextures.push_back(pSpecular);
 		pTextures.push_back(pGloss);
 
 		m_pMeshes.push_back(new Mesh(vertices, indices, translation, scale, yawRotation, pTextures));
+
+		//Fire
+		//vertices, indices, translation, scale, rotation, textures
+		std::vector<Vertex_In> fireVertices{};
+		std::vector<uint32_t> fireIndices{};
+		Utils::ParseOBJ("Resources/fireFX.obj", fireVertices, fireIndices);
+
+		//load needed textures
+		std::vector<Texture*> pFireTextures{};
+		Texture* pFireDiffuse = Texture::LoadFromFile("Resources/fireFX_diffuse.png");
+		pFireTextures.push_back(pFireDiffuse);
+
+		m_pMeshes.push_back(new Mesh(fireVertices, fireIndices, translation, scale, yawRotation, pFireTextures));
 	}
 }

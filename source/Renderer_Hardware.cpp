@@ -2,8 +2,6 @@
 #include "Renderer_Hardware.h"
 #include "Utils.h"
 
-
-
 Renderer_Hardware::Renderer_Hardware(SDL_Window* pWindow, dae::Camera* pCamera, std::vector<Mesh*>& pMeshes) :
 	Renderer(pWindow, pCamera, pMeshes)
 {
@@ -21,23 +19,32 @@ Renderer_Hardware::Renderer_Hardware(SDL_Window* pWindow, dae::Camera* pCamera, 
 	{
 		std::cout << "DirectX initialization failed!\n";
 	}
-
-	//Initialize Camera
-	m_AspectRatio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
+	//pMeshes should contain 2 meshes
+	// 1 is vehicle, 2 is the fire
+	//Initialize all the DirectX resources for the textures
+	for (auto mesh : m_pMeshes) {
+		for (auto texture : mesh->pTextures) {
+			texture->CreateDirectXResources(m_pDevice);
+		}
+	}
 
 	//Initialize Vehicle Effect
-	/*m_pEffectPosTex = new EffectPosTex(m_pDevice);
+	m_pEffectPosTex = new EffectPosTex(m_pDevice);
 	m_pEffectPosTex->Initialize();
-	m_pEffectPosTex->SetDiffuseMap(m_pTexture);
-	m_pEffectPosTex->SetNormalMap(m_pTextureNormal);
-	m_pEffectPosTex->SetSpecularMap(m_pTextureSpecular);
-	m_pEffectPosTex->SetGlossinessMap(m_pTextureGloss);*/
+	m_pEffectPosTex->SetDiffuseMap(pMeshes[0]->pTextures[0]);
+	m_pEffectPosTex->SetNormalMap(pMeshes[0]->pTextures[1]);
+	m_pEffectPosTex->SetSpecularMap(pMeshes[0]->pTextures[2]);
+	m_pEffectPosTex->SetGlossinessMap(pMeshes[0]->pTextures[3]);
 	//Initialize Fire Effect
-	/*m_pEffectFire = new EffectPosTransp(m_pDevice);
+	m_pEffectFire = new EffectPosTransp(m_pDevice);
 	m_pEffectFire->Initialize();
-	m_pEffectFire->SetDiffuseMap(m_pTextureFire);*/
+	m_pEffectFire->SetDiffuseMap(pMeshes[1]->pTextures[0]);
 	
-	//Meshes from rendermanager
+	//Initialize meshes
+	Mesh_Hardware* pVehicle = new Mesh_Hardware(pMeshes[0], m_pDevice, m_pEffectPosTex);
+	Mesh_Hardware* pFire = new Mesh_Hardware(pMeshes[1], m_pDevice, m_pEffectFire);
+	m_pHardwareMeshes.push_back(pVehicle);
+	m_pHardwareMeshes.push_back(pFire);
 }
 
 Renderer_Hardware::~Renderer_Hardware()
@@ -84,8 +91,10 @@ Renderer_Hardware::~Renderer_Hardware()
 void Renderer_Hardware::Update(const dae::Timer* pTimer)
 {
 	m_pCamera->Update(pTimer);
-	for (Mesh* mesh : m_pMeshes) {
-		mesh->RotateY(PI_DIV_4 * pTimer->GetElapsed());
+	if (m_CanRotate) {
+		for (const auto pMesh : m_pMeshes) {
+			pMesh->RotateY(PI_DIV_4 * pTimer->GetElapsed());
+		}
 	}
 }
 
@@ -102,6 +111,16 @@ void Renderer_Hardware::Render()
 	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	// Set Pipeline and Invoke DrawCalls (= RENDER)
+	for (auto pHardwareMesh : m_pHardwareMeshes) {
+		Mesh* pMesh = pHardwareMesh->GetInternalMesh();
+		dae::Matrix worldMatrix = pMesh->worldMatrix;
+		dae::Matrix worldViewProjectionMatrix = worldMatrix * m_pCamera->viewMatrix * m_pCamera->projectionMatrix;
+		pHardwareMesh->SetInvViewMatrix(m_pCamera->invViewMatrix);
+		pHardwareMesh->SetWorldMatrix(worldMatrix);
+		pHardwareMesh->SetWorldViewProjectionMatrix(worldViewProjectionMatrix);
+		// Templated so the buffer can work with multiple vertex types!! Need to give the current type here
+		pHardwareMesh->Render(m_pDeviceContext);
+	}
 	// Update all the matrices
 
 	// Present backbuffer (SWAP)

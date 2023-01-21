@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "DataTypes.h"
-#include "Texture_Software.h"
+#include "Texture.h"
 #include "Camera.h"
 #include "Renderer.h"
 #include "Effect.h"
@@ -30,6 +30,7 @@ public:
 private:
 	//Window in base class
 	bool m_IsInitialized{ false };
+	bool m_CanRotate{ true };
 
 	//DIRECTX
 	HRESULT InitializeDirectX();

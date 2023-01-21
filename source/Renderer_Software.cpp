@@ -247,9 +247,6 @@ void Renderer_Software::RenderTriangle(const Vertex_Out& vertex1, const Vertex_O
 					//	Interpolate Position
 					Vector4 interpolatedPos = (vertex1.position * (w0 / vertex1.position.w) + vertex2.position * (w1 / vertex2.position.w) + vertex3.position * (w2 / vertex3.position.w));
 					interpolatedPos = interpolatedPos * interpolatedDepthW;
-					//	Interpolate Color
-					ColorRGB interpolatedColor = (vertex1.color * (w0 / vertex1.position.w) + vertex2.color * (w1 / vertex2.position.w) + vertex3.color * (w2 / vertex3.position.w));
-					interpolatedColor *= interpolatedDepthW;
 					//	Interpolate UV
 					Vector2 interpolatedUV = (vertex1.uv * w0 / vertex1.position.w + vertex2.uv * w1 / vertex2.position.w + vertex3.uv * w2 / vertex3.position.w);
 					interpolatedUV *= interpolatedDepthW;
@@ -266,7 +263,7 @@ void Renderer_Software::RenderTriangle(const Vertex_Out& vertex1, const Vertex_O
 					interpolatedView *= interpolatedDepthW;
 					interpolatedView.Normalize();
 
-					Vertex_Out currentVertex{ interpolatedPos, interpolatedColor, interpolatedUV, interpolatedNormal, interpolatedTangent, interpolatedView };
+					Vertex_Out currentVertex{ interpolatedPos, interpolatedUV, interpolatedNormal, interpolatedTangent, interpolatedView };
 					ColorRGB finalColor{ PixelShading(currentVertex, pMesh) };
 
 					//Update Color in Buffer
@@ -288,10 +285,10 @@ ColorRGB Renderer_Software::PixelShading(const Vertex_Out& vertex, Mesh_Software
 		float interpolatedDepth = Utils::Remap(vertex.position.z, 0.985f, 1.f);
 		return ColorRGB{ interpolatedDepth, interpolatedDepth, interpolatedDepth };
 	}
-	Texture_Software* pDiffuse{};
-	Texture_Software* pNormal{};
-	Texture_Software* pSpecular{};
-	Texture_Software* pGloss{};
+	Texture* pDiffuse{};
+	Texture* pNormal{};
+	Texture* pSpecular{};
+	Texture* pGloss{};
 
 	ColorRGB ambientColor{ 0.025f, 0.025f, 0.025f };
 	ColorRGB finalColor{};
@@ -422,7 +419,7 @@ void Renderer_Software::MeshVertexTransformationFunction(std::vector<Mesh_Softwa
 			Vector3 vertexWorldPosition = pMesh->worldMatrix.TransformPoint(vertex.position);
 			Vector3 viewDirection{ m_pCamera->origin - vertexWorldPosition };
 
-			Vertex_Out transformedVertex{ transformedVertexPos, vertex.color, vertex.uv, transformedNormal, transformedTangent, viewDirection };
+			Vertex_Out transformedVertex{ transformedVertexPos, vertex.uv, transformedNormal, transformedTangent, viewDirection };
 			pSoftwareMesh->vertices_out.emplace_back(transformedVertex);
 		}
 	}

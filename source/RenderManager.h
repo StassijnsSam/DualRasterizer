@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Renderer_Software.h"
-#include "Texture_Software.h"
+#include "Renderer_Hardware.h"
+#include "Texture.h"
 
 struct SDL_Window;
 struct SDL_Surface;
@@ -25,6 +26,7 @@ namespace dae
 	private:
 		SDL_Window* m_pWindow{};
 		Renderer_Software* m_pRendererSoftware{};
+		Renderer_Hardware* m_pRendererHardware{};
 
 		Renderer* m_pCurrentRenderer{};
 		Camera* m_pCamera{};
