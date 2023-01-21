@@ -13,7 +13,8 @@ using namespace dae;
 Renderer_Software::Renderer_Software(SDL_Window* pWindow, dae::Camera* pCamera, std::vector<Mesh*>& pMeshes) :
 	Renderer(pWindow, pCamera, pMeshes)
 {
-	m_RendererColor = ColorRGB{ 0.39f * 255.f, 0.39f * 255.f, 0.39f * 255 };
+	m_RendererColor = ColorRGB{ 0.39f, 0.39f, 0.39f}*255.f;
+	m_UniformColor = ColorRGB{ 0.1f, 0.1f, 0.1f} * 255.f;
 	
 	//Create Buffers
 	m_pFrontBuffer = SDL_GetWindowSurface(pWindow);
@@ -98,6 +99,9 @@ void Renderer_Software::Render_Meshes() {
 	std::fill_n(m_pDepthBufferPixels, m_Width * m_Height, FLT_MAX);
 
 	ColorRGB clearColor = m_RendererColor;
+	if (m_ShouldUseUniformColor) {
+		clearColor = m_UniformColor;
+	}
 	//SDL_MapRGB
 	Uint32 clearColorUint = 0xFF000000 | (Uint32)clearColor.r | (Uint32)clearColor.g << 8 | (Uint32)clearColor.b << 16;
 	SDL_FillRect(m_pBackBuffer, NULL, clearColorUint);
@@ -210,6 +214,22 @@ void Renderer_Software::RenderTriangle(const Vertex_Out& vertex1, const Vertex_O
 	{
 		for (int py{ min.y }; py <= max.y; ++py)
 		{
+			if (m_CanRenderBoundingBox)
+			{
+				//White bounding box
+				ColorRGB finalColor{ 1,1,1 };
+
+				//Update Color in Buffer
+				finalColor.MaxToOne();
+
+				m_pBackBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBackBuffer->format,
+					static_cast<uint8_t>(finalColor.r * 255),
+					static_cast<uint8_t>(finalColor.g * 255),
+					static_cast<uint8_t>(finalColor.b * 255));
+
+				continue;
+			}
+			
 			const Vector2 pixelPoint{ static_cast<float>(px), static_cast<float>(py) };
 
 			Vector2 pointToSide = pixelPoint - v0;
@@ -224,7 +244,9 @@ void Renderer_Software::RenderTriangle(const Vertex_Out& vertex1, const Vertex_O
 			Vector2 c = v0 - v2;
 			float w1 = Vector2::Cross(c, pointToSide);
 
-			const bool pointInTriangle = (w0 >= 0) && (w1 >= 0) && (w2 >= 0);
+			const bool pointInTriangle = (w0 >= 0) && (w1 >= 0) && (w2 >= 0); //backface
+			// <= frontface
+			// > || < both
 
 			if (pointInTriangle) {
 				//Barycentric coordinates
@@ -447,4 +469,14 @@ void Renderer_Software::CycleLightingMode() {
 		std::cout << "Lighting mode set to Combined" << std::endl;
 		break;
 	}
+}
+
+void Renderer_Software::ToggleBoundingBox()
+{
+	m_CanRenderBoundingBox = !m_CanRenderBoundingBox;
+}
+
+bool Renderer_Software::CanRotate()
+{
+	return m_CanRotate;
 }

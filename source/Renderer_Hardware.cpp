@@ -6,6 +6,7 @@ Renderer_Hardware::Renderer_Hardware(SDL_Window* pWindow, dae::Camera* pCamera, 
 	Renderer(pWindow, pCamera, pMeshes)
 {
 	m_RendererColor = ColorRGB{ 0.39f, 0.59f, 0.93f };
+	m_UniformColor = ColorRGB{ 0.1f, 0.1f, 0.1f };
 	
 	//Initialize
 	SDL_GetWindowSize(pWindow, &m_Width, &m_Height);
@@ -109,18 +110,27 @@ void Renderer_Hardware::Render()
 	// Clear RTV and DSV
 
 	ColorRGB clearColor = m_RendererColor;
+	if (m_ShouldUseUniformColor) {
+		clearColor = m_UniformColor;
+	}
 	m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView, &clearColor.r);
 	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	// Set Pipeline and Invoke DrawCalls (= RENDER)
-	for (auto pHardwareMesh : m_pHardwareMeshes) {
+	for (int i{}; i < m_pHardwareMeshes.size(); ++i) {
+		Mesh_Hardware* pHardwareMesh = m_pHardwareMeshes[i];
 		Mesh* pMesh = pHardwareMesh->GetInternalMesh();
 		dae::Matrix worldMatrix = pMesh->worldMatrix;
 		dae::Matrix worldViewProjectionMatrix = worldMatrix * m_pCamera->viewMatrix * m_pCamera->projectionMatrix;
 		pHardwareMesh->SetInvViewMatrix(m_pCamera->invViewMatrix);
 		pHardwareMesh->SetWorldMatrix(worldMatrix);
 		pHardwareMesh->SetWorldViewProjectionMatrix(worldViewProjectionMatrix);
-		// Templated so the buffer can work with multiple vertex types!! Need to give the current type here
+		//1 will always be the fire mesh
+		if (i == 1) {
+			if (!m_CanRenderFire) {
+				continue;
+			}
+		}
 		pHardwareMesh->Render(m_pDeviceContext);
 	}
 	// Update all the matrices
@@ -133,6 +143,16 @@ void Renderer_Hardware::CycleSamplerState() {
 	if (m_pEffectPosTex) {
 		m_pEffectPosTex->CycleSamplerState();
 	}
+}
+
+void Renderer_Hardware::ToggleFire()
+{
+	m_CanRenderFire = !m_CanRenderFire;
+}
+
+bool Renderer_Hardware::CanRenderFire()
+{
+	return m_CanRenderFire;
 }
 
 HRESULT Renderer_Hardware::InitializeDirectX()

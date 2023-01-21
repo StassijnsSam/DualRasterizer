@@ -26,11 +26,13 @@ public:
 	virtual void Render() override;
 
 	void CycleSamplerState();
+	void ToggleFire();
+	bool CanRenderFire();
 
 private:
 	//Window in base class
 	bool m_IsInitialized{ false };
-	bool m_CanRotate{ true };
+	bool m_CanRenderFire{ true };
 
 	//DIRECTX
 	HRESULT InitializeDirectX();
@@ -48,6 +50,5 @@ private:
 	std::vector<Mesh_Hardware*> m_pHardwareMeshes{};
 	EffectPosTex* m_pEffectPosTex{};
 	EffectPosTransp* m_pEffectFire{};
-	
 };
 #pragma once

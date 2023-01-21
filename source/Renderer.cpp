@@ -11,5 +11,14 @@ Renderer::Renderer(SDL_Window* pWindow, dae::Camera* pCamera, std::vector<Mesh*>
 	SDL_GetWindowSize(pWindow, &m_Width, &m_Height);
 	m_AspectRatio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
 	//Initialize Camera
-	//m_Camera.Initialize(60.f, { .0f,5.f, -30.f }, m_AspectRatio);
+}
+
+void Renderer::ToggleRotation()
+{
+	m_CanRotate = !m_CanRotate;
+}
+
+void Renderer::ToggleClearColor()
+{
+	m_ShouldUseUniformColor = !m_ShouldUseUniformColor;
 }

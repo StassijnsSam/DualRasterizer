@@ -22,6 +22,9 @@ public:
 	Renderer& operator=(const Renderer&) = delete;
 	Renderer& operator=(Renderer&&) noexcept = delete;
 
+	void ToggleRotation();
+	void ToggleClearColor();
+
 	//Pure virtual functions
 	virtual void Update(const dae::Timer* pTimer) = 0;
 	virtual void Render() = 0;
@@ -41,4 +44,6 @@ protected:
 	dae::ColorRGB m_UniformColor{ 0.1f, 0.1f, 0.1f };
 
 	bool m_ShouldUseUniformColor{ false };
+
+	bool m_CanRotate{ true };
 };

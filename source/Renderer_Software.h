@@ -33,6 +33,8 @@ public:
 	void ToggleNormalMap();
 	bool SaveBufferToImage() const;
 	void CycleLightingMode();
+	void ToggleBoundingBox();
+	bool CanRotate();
 
 private:
 	//Window in base class
@@ -48,8 +50,8 @@ private:
 	std::vector<Light*> m_pLights{};
 
 	bool m_RenderDepthBuffer{};
-	bool m_CanRotate{ true };
 	bool m_CanUseNormalMap{ true };
+	bool m_CanRenderBoundingBox{ false };
 
 	ShadingMode m_CurrentShadingMode{ ShadingMode::Combined };
 

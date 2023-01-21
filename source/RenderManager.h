@@ -24,6 +24,17 @@ namespace dae
 		void Render() const;
 
 		void ToggleRenderType();
+		void ToggleRotation();
+		void ToggleFire();
+		void CycleSamplerState();
+		void CycleShadingMode();
+		void ToggleNormalMap();
+		void ToggleDepthBuffer();
+		void ToggleBoundingBox();
+		void TogglePrintFPW();
+		void ToggleClearColor();
+
+		bool CanPrintFPW();
 
 		enum class RenderType {
 			Software,
@@ -31,6 +42,8 @@ namespace dae
 		};
 
 	private:
+		bool m_CanPrintFPW{ false };
+
 		SDL_Window* m_pWindow{};
 		Renderer_Software* m_pRendererSoftware{};
 		Renderer_Hardware* m_pRendererHardware{};

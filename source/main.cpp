@@ -59,10 +59,48 @@ int main(int argc, char* args[])
 			case SDL_KEYUP:
 				//Test for a key
 				if (e.key.keysym.scancode == SDL_SCANCODE_F1) {
+					//Toggle between DirectX and Software
 					pRenderManager->ToggleRenderType();
 				}
 				if (e.key.keysym.scancode == SDL_SCANCODE_F2) {
+					//Toggle rotation
+					pRenderManager->ToggleRotation();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F3) {
+					//FireMesh off in hardware
+					pRenderManager->ToggleFire();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F4) {
+					//Cycle hardware sampler state
+					pRenderManager->CycleSamplerState();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F5) {
+					//Cycle software shading mode
+					pRenderManager->CycleShadingMode();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F6) {
+					//Toggle software normal map
+					pRenderManager->ToggleNormalMap();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F7) {
+					//Toggle software depth buffer
+					pRenderManager->ToggleDepthBuffer();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F8) {
+					//Toggle software bounding box
+					pRenderManager->ToggleBoundingBox();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F9) {
+					//Cycle cull mode
 					
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F10) {
+					//Toggle clearColor
+					pRenderManager->ToggleClearColor();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F11) {
+					//Toggle print FPW
+					pRenderManager->TogglePrintFPW();
 				}
 				break;
 			default: ;
@@ -77,12 +115,14 @@ int main(int argc, char* args[])
 
 		//--------- Timer ---------
 		pTimer->Update();
-		printTimer += pTimer->GetElapsed();
-		if (printTimer >= 1.f)
-		{
-			printTimer = 0.f;
-			std::cout << "dFPS: " << pTimer->GetdFPS() << std::endl;
-		}
+		if (pRenderManager->CanPrintFPW()) {
+			printTimer += pTimer->GetElapsed();
+			if (printTimer >= 1.f)
+			{
+				printTimer = 0.f;
+				std::cout << "dFPS: " << pTimer->GetdFPS() << std::endl;
+			}
+		}	
 	}
 	pTimer->Stop();
 

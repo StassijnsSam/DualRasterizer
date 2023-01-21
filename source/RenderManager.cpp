@@ -15,7 +15,7 @@ namespace dae {
 		SDL_GetWindowSize(pWindow, &width, &height);
 		float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
-		m_pCamera->Initialize(90.f, { .0f, 0.f, 0.f }, aspectRatio);
+		m_pCamera->Initialize(45.f, { .0f, 0.f, 0.f }, aspectRatio);
 		
 		//Initialize meshes
 		LoadMeshes();
@@ -23,7 +23,7 @@ namespace dae {
 		//Create the different renderers
 		m_pRendererSoftware = new Renderer_Software(pWindow, m_pCamera, m_pMeshes);
 		m_pRendererHardware = new Renderer_Hardware(pWindow, m_pCamera, m_pMeshes);
-		m_pCurrentRenderer = m_pRendererHardware;
+		m_pCurrentRenderer = m_pRendererSoftware;
 	}
 
 	RenderManager::~RenderManager()
@@ -74,6 +74,90 @@ namespace dae {
 			std::cout << "Switched to software renderer" << std::endl;
 			break;
 		}
+	}
+
+	void RenderManager::ToggleRotation()
+	{
+		//Turn it off for both
+		if (m_pRendererSoftware->CanRotate()) {
+			std::cout << "Rotation turned off" << std::endl;
+		}
+		else {
+			std::cout << "Rotation turned on" << std::endl;
+		}
+		m_pRendererSoftware->ToggleRotation();
+		m_pRendererHardware->ToggleRotation();
+	}
+
+	void RenderManager::ToggleFire()
+	{
+		//Only if you are currently in hardware
+		if (m_pCurrentRenderer == m_pRendererHardware) {
+			if (m_pRendererHardware->CanRenderFire()) {
+				std::cout << "Fire turned off" << std::endl;
+			}
+			else {
+				std::cout << "Fire turned on" << std::endl;
+			}
+			m_pRendererHardware->ToggleFire();
+		}
+	}
+
+	void RenderManager::CycleSamplerState()
+	{
+		//Only if you are currently in hardware
+		if (m_pCurrentRenderer == m_pRendererHardware) {
+			m_pRendererHardware->CycleSamplerState();
+		}
+	}
+
+	void RenderManager::CycleShadingMode()
+	{
+		//Only if you are in software
+		if (m_pCurrentRenderer == m_pRendererSoftware) {
+			m_pRendererSoftware->CycleLightingMode();
+		}
+	}
+
+	void RenderManager::ToggleNormalMap()
+	{
+		//Only if you are in software
+		if (m_pCurrentRenderer == m_pRendererSoftware) {
+			m_pRendererSoftware->ToggleNormalMap();
+		}
+	}
+
+	void RenderManager::ToggleDepthBuffer()
+	{
+		//Only if you are in software
+		if (m_pCurrentRenderer == m_pRendererSoftware) {
+			m_pRendererSoftware->ToggleDepthBuffer();
+		}
+	}
+
+	void RenderManager::ToggleBoundingBox()
+	{
+		//Only if you are in software
+		if (m_pCurrentRenderer == m_pRendererSoftware) {
+			m_pRendererSoftware->ToggleBoundingBox();
+		}
+	}
+
+	void RenderManager::TogglePrintFPW()
+	{
+		m_CanPrintFPW = !m_CanPrintFPW;
+	}
+
+	void RenderManager::ToggleClearColor()
+	{
+		//Toggle clear color for both versions
+		m_pRendererHardware->ToggleClearColor();
+		m_pRendererSoftware->ToggleClearColor();
+	}
+
+	bool RenderManager::CanPrintFPW()
+	{
+		return m_CanPrintFPW;
 	}
 
 	void RenderManager::LoadMeshes()
