@@ -7,6 +7,7 @@ Mesh_Hardware::Mesh_Hardware(Mesh* pMesh, ID3D11Device* pDevice, Effect* pEffect
 	m_pEffectTechnique = m_pEffect->GetEffectTechnique();
 	m_pInputLayout = m_pEffect->GetInputLayout();
 
+	m_pInternalMesh = pMesh;
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC bd = {};

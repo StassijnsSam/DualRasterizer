@@ -38,7 +38,7 @@ protected:
 	std::vector<Mesh*> m_pMeshes{};
 
 	dae::ColorRGB m_RendererColor{};
-	dae::ColorRGB m_UniformColor{};
+	dae::ColorRGB m_UniformColor{ 0.1f, 0.1f, 0.1f };
 
 	bool m_ShouldUseUniformColor{ false };
 };

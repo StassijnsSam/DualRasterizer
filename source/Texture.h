@@ -26,5 +26,8 @@ namespace dae
 		uint32_t* m_pSurfacePixels{ nullptr };
 		ID3D11Texture2D* m_pResource{};
 		ID3D11ShaderResourceView* m_pResourceView{};
+
+		void SetResource(ID3D11Texture2D* pResource);
+		void SetResourceView(ID3D11ShaderResourceView* pResourceView);
 	};
 }

@@ -163,18 +163,18 @@ void EffectPosTex::BuildInputLayout()
 	vertexDesc[0].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[1].SemanticName = "NORMAL";
-	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[1].SemanticName = "TEXCOORD";
+	vertexDesc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	vertexDesc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[2].SemanticName = "TANGENT";
+	vertexDesc[2].SemanticName = "NORMAL";
 	vertexDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[3].SemanticName = "TEXCOORD";
-	vertexDesc[3].Format = DXGI_FORMAT_R32G32_FLOAT;
+	vertexDesc[3].SemanticName = "TANGENT";
+	vertexDesc[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
@@ -285,18 +285,18 @@ void EffectPosTransp::BuildInputLayout()
 	vertexDesc[0].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[1].SemanticName = "NORMAL";
-	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[1].SemanticName = "TEXCOORD";
+	vertexDesc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	vertexDesc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[2].SemanticName = "TANGENT";
+	vertexDesc[2].SemanticName = "NORMAL";
 	vertexDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[3].SemanticName = "TEXCOORD";
-	vertexDesc[3].Format = DXGI_FORMAT_R32G32_FLOAT;
+	vertexDesc[3].SemanticName = "TANGENT";
+	vertexDesc[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	vertexDesc[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 

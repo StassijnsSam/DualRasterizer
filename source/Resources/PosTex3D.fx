@@ -106,6 +106,7 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
     
     float3 normalMapSample = gNormalMap.Sample(gSamplerState, input.Uv).xyz;
     normalMapSample = 2.f * normalMapSample - 1.f;
+    
     float3 tangentSpaceNormal = normalize(mul(normalMapSample, tangentSpaceAxis));
 
     float observedArea = dot(tangentSpaceNormal, -gLightDirection);

@@ -23,7 +23,7 @@ namespace dae {
 		//Create the different renderers
 		m_pRendererSoftware = new Renderer_Software(pWindow, m_pCamera, m_pMeshes);
 		m_pRendererHardware = new Renderer_Hardware(pWindow, m_pCamera, m_pMeshes);
-		m_pCurrentRenderer = m_pRendererSoftware;
+		m_pCurrentRenderer = m_pRendererHardware;
 	}
 
 	RenderManager::~RenderManager()
@@ -59,6 +59,23 @@ namespace dae {
 			m_pCurrentRenderer->Render();
 		}
 	}
+	void RenderManager::ToggleRenderType()
+	{
+		switch (m_CurrentRenderType)
+		{
+		case RenderType::Software:
+			m_pCurrentRenderer = m_pRendererHardware;
+			m_CurrentRenderType = RenderType::Hardware;
+			std::cout << "Switched to hardware renderer" << std::endl;
+			break;
+		case RenderType::Hardware:
+			m_pCurrentRenderer = m_pRendererSoftware;
+			m_CurrentRenderType = RenderType::Software;
+			std::cout << "Switched to software renderer" << std::endl;
+			break;
+		}
+	}
+
 	void RenderManager::LoadMeshes()
 	{
 		//Initial transform

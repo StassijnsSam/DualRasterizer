@@ -58,6 +58,17 @@ namespace dae
 	{
 		return m_pResource;
 	}
+
+	void Texture::SetResource(ID3D11Texture2D* pResource)
+	{
+		m_pResource = pResource;
+	}
+
+	void Texture::SetResourceView(ID3D11ShaderResourceView* pResourceView)
+	{
+		m_pResourceView = pResourceView;
+	}
+
 	void Texture::CreateDirectXResources(ID3D11Device* pDevice)
 	{
 		auto pTextureSurface = m_pSurface;
@@ -92,6 +103,8 @@ namespace dae
 			throw std::runtime_error("Failed to create texture");
 		}
 
+		SetResource(pResource);
+
 		D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc{};
 		SRVDesc.Format = format;
 		SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -103,5 +116,7 @@ namespace dae
 			// Delete texture to not get memory leaks
 			throw std::runtime_error("Failed to create resource view for texture");
 		}
+
+		SetResourceView(pResourceView);
 	}
 }

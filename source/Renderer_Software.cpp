@@ -13,6 +13,8 @@ using namespace dae;
 Renderer_Software::Renderer_Software(SDL_Window* pWindow, dae::Camera* pCamera, std::vector<Mesh*>& pMeshes) :
 	Renderer(pWindow, pCamera, pMeshes)
 {
+	m_RendererColor = ColorRGB{ 0.39f * 255.f, 0.39f * 255.f, 0.39f * 255 };
+	
 	//Create Buffers
 	m_pFrontBuffer = SDL_GetWindowSurface(pWindow);
 	m_pBackBuffer = SDL_CreateRGBSurface(0, m_Width, m_Height, 32, 0, 0, 0, 0);
@@ -95,7 +97,7 @@ void Renderer_Software::Render_Meshes() {
 	//Clear depth buffer and back buffer
 	std::fill_n(m_pDepthBufferPixels, m_Width * m_Height, FLT_MAX);
 
-	ColorRGB clearColor{ 100, 100, 100 };
+	ColorRGB clearColor = m_RendererColor;
 	//SDL_MapRGB
 	Uint32 clearColorUint = 0xFF000000 | (Uint32)clearColor.r | (Uint32)clearColor.g << 8 | (Uint32)clearColor.b << 16;
 	SDL_FillRect(m_pBackBuffer, NULL, clearColorUint);

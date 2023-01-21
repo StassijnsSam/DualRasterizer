@@ -5,6 +5,8 @@
 Renderer_Hardware::Renderer_Hardware(SDL_Window* pWindow, dae::Camera* pCamera, std::vector<Mesh*>& pMeshes) :
 	Renderer(pWindow, pCamera, pMeshes)
 {
+	m_RendererColor = ColorRGB{ 0.39f, 0.59f, 0.93f };
+	
 	//Initialize
 	SDL_GetWindowSize(pWindow, &m_Width, &m_Height);
 
@@ -106,7 +108,7 @@ void Renderer_Hardware::Render()
 
 	// Clear RTV and DSV
 
-	ColorRGB clearColor = ColorRGB{ 0.f, 0.f, 0.3f };
+	ColorRGB clearColor = m_RendererColor;
 	m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView, &clearColor.r);
 	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 

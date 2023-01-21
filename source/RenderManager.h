@@ -23,6 +23,13 @@ namespace dae
 		void Update(const Timer* pTimer);
 		void Render() const;
 
+		void ToggleRenderType();
+
+		enum class RenderType {
+			Software,
+			Hardware
+		};
+
 	private:
 		SDL_Window* m_pWindow{};
 		Renderer_Software* m_pRendererSoftware{};
@@ -32,6 +39,8 @@ namespace dae
 		Camera* m_pCamera{};
 
 		std::vector<Mesh*> m_pMeshes{};
+
+		RenderType m_CurrentRenderType{ RenderType::Software };
 
 		void LoadMeshes();
 	};
