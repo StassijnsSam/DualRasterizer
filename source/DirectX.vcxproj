@@ -82,7 +82,7 @@
     <ClInclude Include="MathHelpers.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Vector2.h" />
@@ -99,7 +99,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
+    <ClCompile Include="RenderManager.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>

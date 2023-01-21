@@ -5,16 +5,16 @@ struct SDL_Surface;
 
 namespace dae
 {
-	class Renderer final
+	class RenderManager final
 	{
 	public:
-		Renderer(SDL_Window* pWindow);
-		~Renderer();
+		RenderManager(SDL_Window* pWindow);
+		~RenderManager();
 
-		Renderer(const Renderer&) = delete;
-		Renderer(Renderer&&) noexcept = delete;
-		Renderer& operator=(const Renderer&) = delete;
-		Renderer& operator=(Renderer&&) noexcept = delete;
+		RenderManager(const RenderManager&) = delete;
+		RenderManager(RenderManager&&) noexcept = delete;
+		RenderManager& operator=(const RenderManager&) = delete;
+		RenderManager& operator=(RenderManager&&) noexcept = delete;
 
 		void Update(const Timer* pTimer);
 		void Render() const;

@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Renderer.h"
+#include "RenderManager.h"
 
 namespace dae {
 
-	Renderer::Renderer(SDL_Window* pWindow) :
+	RenderManager::RenderManager(SDL_Window* pWindow) :
 		m_pWindow(pWindow)
 	{
 		//Initialize
@@ -22,25 +22,25 @@ namespace dae {
 		}
 	}
 
-	Renderer::~Renderer()
+	RenderManager::~RenderManager()
 	{
 		
 	}
 
-	void Renderer::Update(const Timer* pTimer)
+	void RenderManager::Update(const Timer* pTimer)
 	{
 
 	}
 
 
-	void Renderer::Render() const
+	void RenderManager::Render() const
 	{
 		if (!m_IsInitialized)
 			return;
 
 	}
 
-	HRESULT Renderer::InitializeDirectX()
+	HRESULT RenderManager::InitializeDirectX()
 	{
 		return S_FALSE;
 	}

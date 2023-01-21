@@ -5,7 +5,7 @@
 #endif
 
 #undef main
-#include "Renderer.h"
+#include "RenderManager.h"
 
 using namespace dae;
 
@@ -28,7 +28,7 @@ int main(int argc, char* args[])
 	const uint32_t height = 480;
 
 	SDL_Window* pWindow = SDL_CreateWindow(
-		"DirectX - ***Insert Name/Class***",
+		"DualRasterizer Stassijns Sam 2DAE08",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		width, height, 0);
@@ -38,7 +38,7 @@ int main(int argc, char* args[])
 
 	//Initialize "framework"
 	const auto pTimer = new Timer();
-	const auto pRenderer = new Renderer(pWindow);
+	const auto pRenderManager = new RenderManager(pWindow);
 
 	//Start loop
 	pTimer->Start();
@@ -64,10 +64,10 @@ int main(int argc, char* args[])
 		}
 
 		//--------- Update ---------
-		pRenderer->Update(pTimer);
+		pRenderManager->Update(pTimer);
 
 		//--------- Render ---------
-		pRenderer->Render();
+		pRenderManager->Render();
 
 		//--------- Timer ---------
 		pTimer->Update();
@@ -81,7 +81,7 @@ int main(int argc, char* args[])
 	pTimer->Stop();
 
 	//Shutdown "framework"
-	delete pRenderer;
+	delete pRenderManager;
 	delete pTimer;
 
 	ShutDown(pWindow);
