@@ -33,6 +33,7 @@ namespace dae
 		void ToggleBoundingBox();
 		void TogglePrintFPW();
 		void ToggleClearColor();
+		void CycleCullMode();
 
 		bool CanPrintFPW();
 
@@ -42,7 +43,7 @@ namespace dae
 		};
 
 	private:
-		bool m_CanPrintFPW{ false };
+		bool m_CanPrintFPW{ true };
 
 		SDL_Window* m_pWindow{};
 		Renderer_Software* m_pRendererSoftware{};

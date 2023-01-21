@@ -22,8 +22,15 @@ public:
 	Renderer& operator=(const Renderer&) = delete;
 	Renderer& operator=(Renderer&&) noexcept = delete;
 
+	enum class Cullmode {
+		backFace,
+		frontFace,
+		none
+	};
+
 	void ToggleRotation();
 	void ToggleClearColor();
+	virtual void CycleCullmode();
 
 	//Pure virtual functions
 	virtual void Update(const dae::Timer* pTimer) = 0;
@@ -44,6 +51,7 @@ protected:
 	dae::ColorRGB m_UniformColor{ 0.1f, 0.1f, 0.1f };
 
 	bool m_ShouldUseUniformColor{ false };
-
 	bool m_CanRotate{ true };
+
+	Cullmode m_CurrentCullmode{ Cullmode::backFace };
 };

@@ -26,6 +26,7 @@ public:
 	virtual void Render() override;
 
 	void CycleSamplerState();
+	virtual void CycleCullmode() override;
 	void ToggleFire();
 	bool CanRenderFire();
 

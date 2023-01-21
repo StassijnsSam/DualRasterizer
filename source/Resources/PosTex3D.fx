@@ -11,25 +11,13 @@ Texture2D gGlossinessMap : GlossinessMap;
 float3 gLightDirection = { 0.577f, -0.577f, 0.577f };
 
 SamplerState gSamplerState: GlobalSamplerState;
+RasterizerState gRasterizerState : GlobalRasterizeState;
 
 // Constants
 float LIGHTINTENSITY = 7.0f;
 float SHININESS = 25.0f;
 float PI = 3.1415926535f;
 float3 AMBIENTCOLOR = { 0.025f, 0.025f, 0.025f };
-
-SamplerState samPoint
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Wrap; //or Mirror, Clamp, Border
-    AddressV = Wrap; //or Mirror, Clamp, Border
-};
-
-RasterizerState gRasterizerState
-{
-    CullMode = back;
-    FrontCounterClockwise = false;
-};
 
 BlendState gBlendState
 {

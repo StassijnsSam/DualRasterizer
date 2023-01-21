@@ -27,7 +27,15 @@ public:
 		Anisotropic
 	};
 
+	enum RasterizerState {
+		Back,
+		Front,
+		None
+	};
+
 	void CycleSamplerState();
+	void CycleRasterizerState();
+
 	ID3DX11EffectMatrixVariable* GetWorldMatrixVariable();
 	ID3DX11EffectMatrixVariable* GetInViewMatrixVariable();
 
@@ -44,13 +52,21 @@ protected:
 	std::wstring m_EffectFile{};
 	ID3D11Device* m_pDevice{};
 	ID3DX11EffectSamplerVariable* m_pSamplerState{};
+	ID3DX11EffectRasterizerVariable* m_pRasterizerState{};
 
 	//Sampler states
 	ID3D11SamplerState* m_pPointSamplerState{};
 	ID3D11SamplerState* m_pLinearSamplerState{};
 	ID3D11SamplerState* m_pAnisotropicSamplerState{};
 
+	//Rasterizer states
+	ID3D11RasterizerState* m_pBackfaceCullingState{};
+	ID3D11RasterizerState* m_pFrontfaceCullingState{};
+	ID3D11RasterizerState* m_pNoCullingState{};
+
+
 	SampleState m_CurrentSampleState{};
+	RasterizerState m_CurrentRasterizerState{};
 
 	ID3DX11EffectShaderResourceVariable* m_pDiffuseMapVariable{};
 	ID3DX11EffectShaderResourceVariable* m_pNormalMapVariable{};
@@ -64,7 +80,7 @@ protected:
 
 class EffectPosTransp : public Effect {
 public:
-	EffectPosTransp(ID3D11Device* pDevice) : Effect(pDevice, L"Resources/PosTransp3D.fx") {};
+	EffectPosTransp(ID3D11Device* pDevice) : Effect(pDevice, L"Resources/PosTransp3D.fx"){};
 	~EffectPosTransp() = default;
 	void BuildInputLayout() override;
 	void LoadEffectVariable() override;

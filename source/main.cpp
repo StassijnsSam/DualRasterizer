@@ -92,7 +92,7 @@ int main(int argc, char* args[])
 				}
 				if (e.key.keysym.scancode == SDL_SCANCODE_F9) {
 					//Cycle cull mode
-					
+					pRenderManager->CycleCullMode();
 				}
 				if (e.key.keysym.scancode == SDL_SCANCODE_F10) {
 					//Toggle clearColor

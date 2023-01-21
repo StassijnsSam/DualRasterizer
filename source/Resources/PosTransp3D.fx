@@ -5,12 +5,7 @@ float4x4 gViewInvMatrix : VIEWINVERSE;
 
 Texture2D gDiffuseMap : DiffuseMap;
 SamplerState gSamplerState: GlobalSamplerState;
-
-RasterizerState gRasterizerState
-{
-    CullMode = none;
-    FrontCounterClockwise = false; // default
-};
+RasterizerState gRasterizerState : GlobalRasterizeState;
 
 BlendState gBlendState
 {

@@ -18,6 +18,15 @@ Effect::~Effect()
 	if (m_pLinearSamplerState) {
 		m_pLinearSamplerState->Release();
 	}
+	if (m_pBackfaceCullingState) {
+		m_pBackfaceCullingState->Release();
+	}
+	if (m_pFrontfaceCullingState) {
+		m_pFrontfaceCullingState->Release();
+	}
+	if (m_pNoCullingState) {
+		m_pNoCullingState->Release();
+	}
 	if (m_pAnisotropicSamplerState) {
 		m_pAnisotropicSamplerState->Release();
 	}
@@ -70,7 +79,13 @@ void Effect::Initialize()
 		std::wcout << L"SamplerState variable not found!\n";
 	}
 
-	// Create states
+	m_pRasterizerState = m_pEffect->GetVariableByName("gRasterizerState")->AsRasterizer();
+	if (!(m_pRasterizerState->IsValid()))
+	{
+		std::wcout << L"RasterizerState variable not found!\n";
+	}
+
+	// Create sampler states
 	D3D11_SAMPLER_DESC samplerDesc{};
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -92,6 +107,27 @@ void Effect::Initialize()
 	if (m_pPointSamplerState) {
 		m_pSamplerState->SetSampler(0, m_pPointSamplerState);
 		m_CurrentSampleState = SampleState::Point;
+	}
+
+	//Create rasterizer states
+	D3D11_RASTERIZER_DESC rasterizerDesc{};
+
+	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+	rasterizerDesc.FrontCounterClockwise = FALSE;
+	rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	//Back face
+	hr = m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pBackfaceCullingState);
+	//Front face
+	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
+	hr = m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pFrontfaceCullingState);
+	//No culling
+	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	hr = m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pNoCullingState);
+
+	// Initially set to back face
+	if (m_pBackfaceCullingState) {
+		m_pRasterizerState->SetRasterizerState(0, m_pBackfaceCullingState);
+		m_CurrentRasterizerState = RasterizerState::Back;
 	}
 	
 	BuildInputLayout();
@@ -256,20 +292,39 @@ void Effect::CycleSamplerState()
 {
 	switch (m_CurrentSampleState)
 	{
-	case EffectPosTex::Point:
+	case SampleState::Point:
 		m_pSamplerState->SetSampler(0, m_pLinearSamplerState);
 		m_CurrentSampleState = SampleState::Linear;
 		std::wcout << L"Current Sample State set to Linear!" << std::endl;
 		break;
-	case EffectPosTex::Linear:
+	case SampleState::Linear:
 		m_pSamplerState->SetSampler(0, m_pAnisotropicSamplerState);
 		m_CurrentSampleState = SampleState::Anisotropic;
 		std::wcout << L"Current Sample State set to Anisotropic!" << std::endl;
 		break;
-	case EffectPosTex::Anisotropic:
+	case SampleState::Anisotropic:
 		m_pSamplerState->SetSampler(0, m_pPointSamplerState);
 		m_CurrentSampleState = SampleState::Point;
 		std::wcout << L"Current Sample State set to Point!" << std::endl;
+		break;
+	}
+}
+
+void Effect::CycleRasterizerState()
+{
+	switch (m_CurrentRasterizerState)
+	{
+	case RasterizerState::Back:
+		m_pRasterizerState->SetRasterizerState(0, m_pFrontfaceCullingState);
+		m_CurrentRasterizerState = RasterizerState::Front;
+		break;
+	case RasterizerState::Front:
+		m_pRasterizerState->SetRasterizerState(0, m_pNoCullingState);
+		m_CurrentRasterizerState = RasterizerState::None;
+		break;
+	case RasterizerState::None:
+		m_pRasterizerState->SetRasterizerState(0, m_pBackfaceCullingState);
+		m_CurrentRasterizerState = RasterizerState::Back;
 		break;
 	}
 }
@@ -324,6 +379,10 @@ void EffectPosTransp::LoadEffectVariable()
 	if (!(m_pDiffuseMapVariable->IsValid())) {
 		std::wcout << L"DiffuseMapVariable is not valid!" << std::endl;
 	}
+
+	//Set the default rasterizer state to none!
+	m_pRasterizerState->SetRasterizerState(0, m_pNoCullingState);
+	m_CurrentRasterizerState = RasterizerState::None;
 }
 
 void EffectPosTransp::SetDiffuseMap(Texture* pDiffuseTexture)

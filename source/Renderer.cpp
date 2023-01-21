@@ -22,3 +22,21 @@ void Renderer::ToggleClearColor()
 {
 	m_ShouldUseUniformColor = !m_ShouldUseUniformColor;
 }
+
+void Renderer::CycleCullmode()
+{
+	switch (m_CurrentCullmode) {
+	case Cullmode::backFace:
+		m_CurrentCullmode = Cullmode::frontFace;
+		std::cout << "Cullmode changed to front face culling" << std::endl;
+		break;
+	case Cullmode::frontFace:
+		m_CurrentCullmode = Cullmode::none;
+		std::cout << "Cullmode changed to none" << std::endl;
+		break;
+	case Cullmode::none:
+		m_CurrentCullmode = Cullmode::backFace;
+		std::cout << "Cullmode changed to back face culling" << std::endl;
+		break;
+	}
+}

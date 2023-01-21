@@ -244,9 +244,19 @@ void Renderer_Software::RenderTriangle(const Vertex_Out& vertex1, const Vertex_O
 			Vector2 c = v0 - v2;
 			float w1 = Vector2::Cross(c, pointToSide);
 
-			const bool pointInTriangle = (w0 >= 0) && (w1 >= 0) && (w2 >= 0); //backface
-			// <= frontface
-			// > || < both
+			bool pointInTriangle{};
+
+			switch (m_CurrentCullmode) {
+			case Cullmode::backFace:
+				pointInTriangle = (w0 >= 0) && (w1 >= 0) && (w2 >= 0); //backface
+				break;
+			case Cullmode::frontFace:
+				pointInTriangle = (w0 <= 0) && (w1 <= 0) && (w2 <= 0); //frontface
+				break;
+			case Cullmode::none:
+				pointInTriangle = ((w0 >= 0) && (w1 >= 0) && (w2 >= 0) || (w0 <= 0) && (w1 <= 0) && (w2 <= 0)); //none
+				break;
+			}
 
 			if (pointInTriangle) {
 				//Barycentric coordinates

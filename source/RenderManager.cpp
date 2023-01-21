@@ -155,6 +155,13 @@ namespace dae {
 		m_pRendererSoftware->ToggleClearColor();
 	}
 
+	void RenderManager::CycleCullMode()
+	{
+		//Cycle cull mode for both versions
+		m_pRendererHardware->CycleCullmode();
+		m_pRendererSoftware->CycleCullmode();
+	}
+
 	bool RenderManager::CanPrintFPW()
 	{
 		return m_CanPrintFPW;

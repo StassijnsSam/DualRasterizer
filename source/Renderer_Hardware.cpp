@@ -143,6 +143,19 @@ void Renderer_Hardware::CycleSamplerState() {
 	if (m_pEffectPosTex) {
 		m_pEffectPosTex->CycleSamplerState();
 	}
+	if (m_pEffectFire) {
+		m_pEffectFire->CycleSamplerState();
+	}
+}
+
+void Renderer_Hardware::CycleCullmode()
+{
+	if (m_pEffectPosTex) {
+		m_pEffectPosTex->CycleRasterizerState();
+	}
+	if (m_pEffectFire) {
+		m_pEffectFire->CycleRasterizerState();
+	}
 }
 
 void Renderer_Hardware::ToggleFire()
