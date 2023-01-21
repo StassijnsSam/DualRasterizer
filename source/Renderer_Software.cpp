@@ -288,10 +288,10 @@ ColorRGB Renderer_Software::PixelShading(const Vertex_Out& vertex, Mesh_Software
 		float interpolatedDepth = Utils::Remap(vertex.position.z, 0.985f, 1.f);
 		return ColorRGB{ interpolatedDepth, interpolatedDepth, interpolatedDepth };
 	}
-	Texture* pDiffuse{};
-	Texture* pNormal{};
-	Texture* pSpecular{};
-	Texture* pGloss{};
+	Texture_Software* pDiffuse{};
+	Texture_Software* pNormal{};
+	Texture_Software* pSpecular{};
+	Texture_Software* pGloss{};
 
 	ColorRGB ambientColor{ 0.025f, 0.025f, 0.025f };
 	ColorRGB finalColor{};

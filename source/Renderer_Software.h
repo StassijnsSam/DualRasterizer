@@ -1,7 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "DataTypes.h"
-#include "Texture.h"
+#include "Texture_Software.h"
 
 struct SDL_Surface;
 

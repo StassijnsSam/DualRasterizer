@@ -5,13 +5,13 @@
 
 namespace dae
 {
-	Texture::Texture(SDL_Surface* pSurface) :
+	Texture_Software::Texture_Software(SDL_Surface* pSurface) :
 		m_pSurface{ pSurface },
 		m_pSurfacePixels{ (uint32_t*)pSurface->pixels }
 	{
 	}
 
-	Texture::~Texture()
+	Texture_Software::~Texture_Software()
 	{
 		if (m_pSurface)
 		{
@@ -20,15 +20,15 @@ namespace dae
 		}
 	}
 
-	Texture* Texture::LoadFromFile(const std::string& path)
+	Texture_Software* Texture_Software::LoadFromFile(const std::string& path)
 	{
 		//Load SDL_Surface using IMG_LOAD
 		SDL_Surface* pSurface = IMG_Load(path.c_str());
 		//Create & Return a new Texture Object (using SDL_Surface)
-		return new Texture(pSurface);
+		return new Texture_Software(pSurface);
 	}
 
-	ColorRGB Texture::Sample(const Vector2& uv) const
+	ColorRGB Texture_Software::Sample(const Vector2& uv) const
 	{
 		//Sample the correct texel for the given uv
 		Uint32 pixelX = Uint32(m_pSurface->w * uv.x);

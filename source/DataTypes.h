@@ -4,7 +4,7 @@ using namespace dae;
 
 #include "Math.h"
 #include "vector"
-#include "Texture.h"
+#include "Texture_Software.h"
 
 
 struct Vertex_In
@@ -43,7 +43,7 @@ enum class PrimitiveTopology
 
 struct Mesh {
 	Mesh(std::vector<Vertex_In>& verticesIn, std::vector<uint32_t>& indicesIn, Vector3& translation, Vector3& scale,
-		float yawRotation, std::vector<Texture*> pTexturesIn) {
+		float yawRotation, std::vector<Texture_Software*> pTexturesIn) {
 		vertices = verticesIn;
 		indices = indicesIn;
 		Translate(translation);
@@ -71,7 +71,7 @@ struct Mesh {
 	float totalYaw{};
 
 	//Diffuse, Normal, Specular, Glossiness
-	std::vector<dae::Texture*> pTextures{};
+	std::vector<dae::Texture_Software*> pTextures{};
 
 	void Translate(const dae::Vector3& translation) {
 		translationTransform = Matrix::CreateTranslation(translation);

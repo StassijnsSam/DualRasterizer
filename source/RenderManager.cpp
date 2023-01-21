@@ -66,11 +66,11 @@ namespace dae {
 		Vector3 scale{ 1, 1, 1 };
 		float yawRotation = 90.f * TO_RADIANS;
 		//load needed textures
-		std::vector<Texture*> pTextures{};
-		Texture* pDiffuse = Texture::LoadFromFile("Resources/vehicle_diffuse.png");
-		Texture* pNormal = Texture::LoadFromFile("Resources/vehicle_normal.png");
-		Texture* pSpecular = Texture::LoadFromFile("Resources/vehicle_specular.png");
-		Texture* pGloss = Texture::LoadFromFile("Resources/vehicle_gloss.png");
+		std::vector<Texture_Software*> pTextures{};
+		Texture_Software* pDiffuse = Texture_Software::LoadFromFile("Resources/vehicle_diffuse.png");
+		Texture_Software* pNormal = Texture_Software::LoadFromFile("Resources/vehicle_normal.png");
+		Texture_Software* pSpecular = Texture_Software::LoadFromFile("Resources/vehicle_specular.png");
+		Texture_Software* pGloss = Texture_Software::LoadFromFile("Resources/vehicle_gloss.png");
 		pTextures.push_back(pDiffuse);
 		pTextures.push_back(pNormal);
 		pTextures.push_back(pSpecular);

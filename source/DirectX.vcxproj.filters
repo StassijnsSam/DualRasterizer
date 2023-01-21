@@ -40,8 +40,11 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Renderer_Software.h" />
     <ClInclude Include="DataTypes.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Texture_Software.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Renderer_Hardware.h" />
+    <ClInclude Include="Mesh_Hardware.h" />
+    <ClInclude Include="Effect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -64,6 +67,9 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Renderer_Software.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Texture_Software.cpp" />
+    <ClCompile Include="Mesh_Hardware.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Renderer_Hardware.cpp" />
   </ItemGroup>
 </Project>
