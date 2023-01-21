@@ -103,16 +103,17 @@ void Renderer_Software::Render_Meshes() {
 	//Vertices in NDC space
 	MeshVertexTransformationFunction(m_pSoftwareMeshes);
 	//go over all the meshes
-	for (const auto pMesh : m_pSoftwareMeshes) {
-		if (pMesh->primitiveTopology == PrimitiveTopology::TriangleList) {
+	for (const auto pSoftwareMesh : m_pSoftwareMeshes) {
+		Mesh* pMesh = pSoftwareMesh->internalMesh;
+		if (pSoftwareMesh->primitiveTopology == PrimitiveTopology::TriangleList) {
 			int size = static_cast<int>(pMesh->indices.size());
 			int amountOfTriangles = size / 3;
 
 			//go over all triangles
 			for (int i{}; i < amountOfTriangles; ++i) {
-				Vertex_Out vertex1{ pMesh->vertices_out[pMesh->indices[3 * i]] };
-				Vertex_Out vertex2{ pMesh->vertices_out[pMesh->indices[3 * i + 1]] };
-				Vertex_Out vertex3{ pMesh->vertices_out[pMesh->indices[3 * i + 2]] };
+				Vertex_Out vertex1{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i]] };
+				Vertex_Out vertex2{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i + 1]] };
+				Vertex_Out vertex3{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i + 2]] };
 
 				//Frustrum culling for x and y
 				if (vertex1.position.x < -1 || vertex1.position.x > 1 ||
@@ -138,15 +139,15 @@ void Renderer_Software::Render_Meshes() {
 				vertex3.position.x = (vertex3.position.x + 1) / 2.f * static_cast<float>(m_Width);
 				vertex3.position.y = (1 - vertex3.position.y) / 2.f * static_cast<float>(m_Height);
 
-				RenderTriangle(vertex1, vertex2, vertex3, pMesh);
+				RenderTriangle(vertex1, vertex2, vertex3, pSoftwareMesh);
 			}
 		}
-		if (pMesh->primitiveTopology == PrimitiveTopology::TriangleStrip) {
+		if (pSoftwareMesh->primitiveTopology == PrimitiveTopology::TriangleStrip) {
 			//go over all the indices one by one, every pair of 3 will be a triangle
 			for (int i{}; i <= pMesh->indices.size() - 3; ++i) {
-				Vertex_Out vertex1{ pMesh->vertices_out[pMesh->indices[i]] };
-				Vertex_Out vertex2{ pMesh->vertices_out[pMesh->indices[i + 1]] };
-				Vertex_Out vertex3{ pMesh->vertices_out[pMesh->indices[i + 2]] };
+				Vertex_Out vertex1{ pSoftwareMesh->vertices_out[pMesh->indices[i]] };
+				Vertex_Out vertex2{ pSoftwareMesh->vertices_out[pMesh->indices[i + 1]] };
+				Vertex_Out vertex3{ pSoftwareMesh->vertices_out[pMesh->indices[i + 2]] };
 				//if uneven, switch the last two vertices
 				if (i % 2 == 1) {
 					Vertex_Out tempVertex{ vertex2 };
@@ -182,7 +183,7 @@ void Renderer_Software::Render_Meshes() {
 				vertex3.position.x = (vertex3.position.x + 1) / 2.f * static_cast<float>(m_Width);
 				vertex3.position.y = (1 - vertex3.position.y) / 2.f * static_cast<float>(m_Height);
 
-				RenderTriangle(vertex1, vertex2, vertex3, pMesh);
+				RenderTriangle(vertex1, vertex2, vertex3, pSoftwareMesh);
 			}
 		}
 	}
@@ -281,7 +282,7 @@ void Renderer_Software::RenderTriangle(const Vertex_Out& vertex1, const Vertex_O
 	}
 }
 
-ColorRGB Renderer_Software::PixelShading(const Vertex_Out& vertex, Mesh_Software* pMesh)
+ColorRGB Renderer_Software::PixelShading(const Vertex_Out& vertex, Mesh_Software* pSoftwareMesh)
 {
 	if (m_RenderDepthBuffer) {
 		float interpolatedDepth = Utils::Remap(vertex.position.z, 0.985f, 1.f);
@@ -297,6 +298,8 @@ ColorRGB Renderer_Software::PixelShading(const Vertex_Out& vertex, Mesh_Software
 	float specularShininess{ 25.f };
 
 	//Get the textures
+
+	Mesh* pMesh = pSoftwareMesh->internalMesh;
 	if (pMesh->pTextures.size() == 4) {
 		pDiffuse = pMesh->pTextures[0];
 		pNormal = pMesh->pTextures[1];
@@ -393,10 +396,11 @@ ColorRGB Renderer_Software::PixelShading(const Vertex_Out& vertex, Mesh_Software
 
 
 void Renderer_Software::MeshVertexTransformationFunction(std::vector<Mesh_Software*>& pMeshes_in) const {
-	for (auto pMesh : pMeshes_in) {
+	for (auto pSoftwareMesh : pMeshes_in) {
+		Mesh* pMesh = pSoftwareMesh->internalMesh;
 		Matrix worldViewProjectionMatrix = pMesh->worldMatrix * m_pCamera->viewMatrix * m_pCamera->projectionMatrix;
 		//clear the current vertices_out
-		pMesh->vertices_out.clear();
+		pSoftwareMesh->vertices_out.clear();
 		for (const Vertex_In& vertex : pMesh->vertices) {
 			//make sure w is initialised as 1
 			Vector4 position{ vertex.position, 1 };
@@ -419,7 +423,7 @@ void Renderer_Software::MeshVertexTransformationFunction(std::vector<Mesh_Softwa
 			Vector3 viewDirection{ m_pCamera->origin - vertexWorldPosition };
 
 			Vertex_Out transformedVertex{ transformedVertexPos, vertex.color, vertex.uv, transformedNormal, transformedTangent, viewDirection };
-			pMesh->vertices_out.emplace_back(transformedVertex);
+			pSoftwareMesh->vertices_out.emplace_back(transformedVertex);
 		}
 	}
 }

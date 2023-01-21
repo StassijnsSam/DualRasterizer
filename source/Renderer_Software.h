@@ -54,7 +54,7 @@ private:
 	ShadingMode m_CurrentShadingMode{ ShadingMode::Combined };
 
 	void Render_Meshes();
-	void RenderTriangle(const Vertex_Out& vertex1, const Vertex_Out& vertex2, const Vertex_Out& vertex3, Mesh_Software* pMesh);
+	void RenderTriangle(const Vertex_Out& vertex1, const Vertex_Out& vertex2, const Vertex_Out& vertex3, Mesh_Software* pSoftwareMesh);
 
 	ColorRGB PixelShading(const Vertex_Out& vertex, Mesh_Software* pMesh);
 

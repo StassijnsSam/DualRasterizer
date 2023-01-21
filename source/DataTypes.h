@@ -52,15 +52,12 @@ struct Mesh {
 		pTextures = pTexturesIn;
 	}
 
-	Mesh(Mesh* pMesh) {
-		//Issues, needs to point to the same place
-		vertices = pMesh->vertices;
-		indices = pMesh->indices;
-		worldMatrix = pMesh->worldMatrix;
-		translationTransform = pMesh->translationTransform;
-		scaleTransform = pMesh->scaleTransform;
-		rotationTransform = pMesh->rotationTransform;
-		pTextures = pMesh->pTextures;
+	~Mesh() {
+		//Delete all the textures
+		for (auto pTexture : pTextures) {
+			delete pTexture;
+			pTexture = nullptr;
+		}
 	}
 
 	std::vector<Vertex_In> vertices{};
@@ -95,22 +92,15 @@ struct Mesh {
 	}
 };
 
-struct Mesh_Software : public Mesh
+struct Mesh_Software 
 {
-	Mesh_Software(Mesh* pMesh, PrimitiveTopology topology):
-	Mesh(pMesh)
+	Mesh_Software(Mesh* pMesh, PrimitiveTopology topology)
 	{
 		primitiveTopology = topology;
+		internalMesh = pMesh;
 	}
-
-	~Mesh_Software() {
-		//Delete all the textures
-		for (auto pTexture : pTextures) {
-			delete pTexture;
-			pTexture = nullptr;
-		}
-	}
-
+	
+	Mesh* internalMesh;
 	PrimitiveTopology primitiveTopology{ PrimitiveTopology::TriangleList };
 	std::vector<Vertex_Out> vertices_out{};
 };
