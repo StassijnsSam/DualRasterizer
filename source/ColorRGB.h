@@ -100,6 +100,10 @@ namespace dae
 		{
 			return { r / s, g / s,b / s };
 		}
+
+		bool operator==(ColorRGB other) {
+			return (r == other.r) && (g == other.g) && (b == other.b);
+		}
 		#pragma endregion
 	};
 

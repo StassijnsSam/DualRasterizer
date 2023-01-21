@@ -1,11 +1,17 @@
 #pragma once
 #include <fstream>
 #include "Math.h"
+#include "DataTypes.h"
 
 namespace dae
 {
 	namespace Utils
 	{
+#pragma region map
+		inline float Remap(float depthValue, float min, float max) {
+			return (depthValue - min) / (max - min);
+		}
+#pragma endregion
 		//Just parses vertices and indices
 #pragma warning(push)
 #pragma warning(disable : 4505) //Warning unreferenced local function
@@ -159,5 +165,47 @@ namespace dae
 			return true;
 		}
 #pragma warning(pop)
+	}
+	namespace GeometryUtils {
+#pragma region PointInTriangle
+		inline bool IsPointInTriangle(Vector2 v0, Vector2 v1, Vector2 v2, Vector2 pixel) {
+			Vector2 pointToSide = pixel - v0;
+			Vector2 a = v1 - v0;
+			if (Vector2::Cross(a, pointToSide) < 0) return false; // Point is not in triangle
+
+			pointToSide = pixel - v1;
+			Vector2 b = v2 - v1;
+			if (Vector2::Cross(b, pointToSide) < 0) return false; // Point is not in triangle
+
+			pointToSide = pixel - v2;
+			Vector2 c = v0 - v2;
+			if (Vector2::Cross(c, pointToSide) < 0) return false; // Point is not in triangle
+
+			return true;
+
+		}
+	}
+
+#pragma endregion
+	namespace LightUtils
+	{
+		//Direction from target to light
+		inline Vector3 GetDirectionToLight(const Light* light, const Vector3 origin)
+		{
+			if (light->type == LightType::Directional) {
+				return Vector3(FLT_MAX, FLT_MAX, FLT_MAX);
+			}
+			return light->origin - origin;
+		}
+
+		inline ColorRGB GetRadiance(const Light* light, const Vector3& target)
+		{
+			if (light->type == LightType::Directional) {
+				return light->color * light->intensity;
+			}
+
+			Vector3 pointToLightOrigin{ light->origin - target };
+			return light->color * light->intensity / pointToLightOrigin.SqrMagnitude();
+		}
 	}
 }

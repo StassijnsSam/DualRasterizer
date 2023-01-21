@@ -38,6 +38,10 @@
     </ClInclude>
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="Renderer_Software.h" />
+    <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -58,8 +62,8 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Renderer_Software.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
 </Project>

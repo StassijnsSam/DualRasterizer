@@ -1,7 +1,9 @@
 #include "pch.h"
-
 #include "Vector2.h"
+
 #include <cassert>
+
+#include <cmath>
 
 namespace dae {
 	const Vector2 Vector2::UnitX = Vector2{ 1, 0 };

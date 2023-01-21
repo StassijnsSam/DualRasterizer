@@ -146,14 +146,12 @@ namespace dae {
 
 	Matrix Matrix::CreateLookAtLH(const Vector3& origin, const Vector3& forward, const Vector3& up)
 	{
-		assert(false && "Not Implemented");
 		return {};
 	}
 
 	Matrix Matrix::CreatePerspectiveFovLH(float fov, float aspect, float zn, float zf)
 	{
-		assert(false && "Not Implemented");
-		return {};
+		return Matrix({ {1 / (fov * aspect), 0, 0, 0},{0, 1 / fov, 0, 0},{0, 0, zf / (zf - zn), 1},{0, 0, -(zf * zn) / (zf - zn), 0} });
 	}
 
 	Vector3 Matrix::GetAxisX() const

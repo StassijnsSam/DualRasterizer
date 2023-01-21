@@ -6,6 +6,7 @@
 
 #undef main
 #include "RenderManager.h"
+#include "Timer.h"
 
 using namespace dae;
 
@@ -37,7 +38,7 @@ int main(int argc, char* args[])
 		return 1;
 
 	//Initialize "framework"
-	const auto pTimer = new Timer();
+	const auto pTimer = new dae::Timer();
 	const auto pRenderManager = new RenderManager(pWindow);
 
 	//Start loop

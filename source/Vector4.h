@@ -32,5 +32,6 @@ namespace dae
 		Vector4& operator+=(const Vector4& v);
 		float& operator[](int index);
 		float operator[](int index) const;
+		bool operator==(Vector4 other);
 	};
 }

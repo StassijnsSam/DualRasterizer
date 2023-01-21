@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Renderer_Software.h"
+
 struct SDL_Window;
 struct SDL_Surface;
 
@@ -21,14 +23,13 @@ namespace dae
 
 	private:
 		SDL_Window* m_pWindow{};
+		Renderer_Software* m_pRendererSoftware{};
 
-		int m_Width{};
-		int m_Height{};
+		Renderer* m_pCurrentRenderer{};
+		Camera* m_pCamera{};
 
-		bool m_IsInitialized{ false };
+		std::vector<Mesh*> m_pMeshes{};
 
-		//DIRECTX
-		HRESULT InitializeDirectX();
-		//...
+		void LoadMeshes();
 	};
 }

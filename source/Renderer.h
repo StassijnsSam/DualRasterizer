@@ -1,44 +1,44 @@
 #pragma once
 
-#include <cstdint>
 #include <vector>
+#include "Timer.h"
+#include "Camera.h"
+#include "DataTypes.h"
 
 struct SDL_Window;
 
-namespace dae
+class Timer;
+class Camera;
+
+class Renderer
 {
-	class Timer;
-	class Camera;
-	class Mesh;
+public:
+	Renderer(SDL_Window* pWindow, dae::Camera* pCamera, std::vector<Mesh*> pMeshes);
+	virtual ~Renderer() = default;
 
-	class Renderer final
-	{
-	public:
-		Renderer(SDL_Window* pWindow);
-		virtual ~Renderer() = default;
+	//Rule of 5
+	Renderer(const Renderer&) = delete;
+	Renderer(Renderer&&) noexcept = delete;
+	Renderer& operator=(const Renderer&) = delete;
+	Renderer& operator=(Renderer&&) noexcept = delete;
 
-		//Rule of 5
-		Renderer(const Renderer&) = delete;
-		Renderer(Renderer&&) noexcept = delete;
-		Renderer& operator=(const Renderer&) = delete;
-		Renderer& operator=(Renderer&&) noexcept = delete;
+	//Pure virtual functions
+	virtual void Update(const dae::Timer* pTimer) = 0;
+	virtual void Render() = 0;
 
-		//Pure virtual functions
-		virtual void Update(Timer* pTimer) = 0;
-		virtual void Render() = 0;
-
-	private:
-		SDL_Window* m_pWindow{};
+protected:
+	SDL_Window* m_pWindow{};
 		
-		int m_Width{};
-		int m_Height{};
+	int m_Width{};
+	int m_Height{};
 
-		Camera* m_pCamera{};
-		std::vector<Mesh*> m_pMeshes{};
+	float m_AspectRatio{};
 
-		ColorRGB m_RendererColor{};
-		ColorRGB m_UniformColor{};
+	dae::Camera* m_pCamera{};
+	std::vector<Mesh*> m_pMeshes{};
 
-		bool m_ShouldUseUniformColor{ false };
-	};
-}
+	dae::ColorRGB m_RendererColor{};
+	dae::ColorRGB m_UniformColor{};
+
+	bool m_ShouldUseUniformColor{ false };
+};

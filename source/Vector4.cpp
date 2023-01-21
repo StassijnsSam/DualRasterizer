@@ -1,11 +1,11 @@
 #include "pch.h"
-
 #include "Vector4.h"
 
 #include <cassert>
 
 #include "Vector2.h"
 #include "Vector3.h"
+#include <cmath>
 
 namespace dae
 {
@@ -97,6 +97,10 @@ namespace dae
 		if (index == 1)return y;
 		if (index == 2)return z;
 		return w;
+	}
+
+	bool Vector4::operator==(Vector4 other) {
+		return (x = other.x) && (y == other.y) && (z == other.z) && (w == other.w);
 	}
 #pragma endregion
 }
