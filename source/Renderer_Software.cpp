@@ -7,6 +7,7 @@
 #include "Utils.h"
 #include "Timer.h"
 #include <iostream>
+#include <ppl.h> //parallel_for
 
 using namespace dae;
 
@@ -113,40 +114,42 @@ void Renderer_Software::Render_Meshes() {
 		Mesh* pMesh = pSoftwareMesh->internalMesh;
 		if (pSoftwareMesh->primitiveTopology == PrimitiveTopology::TriangleList) {
 			int size = static_cast<int>(pMesh->indices.size());
-			int amountOfTriangles = size / 3;
+			uint32_t amountOfTriangles = size / 3;
 
 			//go over all triangles
-			for (int i{}; i < amountOfTriangles; ++i) {
-				Vertex_Out vertex1{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i]] };
-				Vertex_Out vertex2{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i + 1]] };
-				Vertex_Out vertex3{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i + 2]] };
+			concurrency::parallel_for(0u, amountOfTriangles, [=, this](int i) 
+				{
+			Vertex_Out vertex1{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i]] };
+			Vertex_Out vertex2{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i + 1]] };
+			Vertex_Out vertex3{ pSoftwareMesh->vertices_out[pMesh->indices[3 * i + 2]] };
 
-				//Frustrum culling for x and y
-				if (vertex1.position.x < -1 || vertex1.position.x > 1 ||
-					vertex1.position.y < -1 || vertex1.position.y > 1) {
-					continue;
-				}
-				if (vertex2.position.x < -1 || vertex2.position.x > 1 ||
-					vertex2.position.y < -1 || vertex2.position.y > 1) {
-					continue;
-				}
-				if (vertex3.position.x < -1 || vertex3.position.x > 1 ||
-					vertex3.position.y < -1 || vertex3.position.y > 1) {
-					continue;
-				}
-
-				//Vertices from NDC space to raster space
-				vertex1.position.x = (vertex1.position.x + 1) / 2.f * static_cast<float>(m_Width);
-				vertex1.position.y = (1 - vertex1.position.y) / 2.f * static_cast<float>(m_Height);
-
-				vertex2.position.x = (vertex2.position.x + 1) / 2.f * static_cast<float>(m_Width);
-				vertex2.position.y = (1 - vertex2.position.y) / 2.f * static_cast<float>(m_Height);
-
-				vertex3.position.x = (vertex3.position.x + 1) / 2.f * static_cast<float>(m_Width);
-				vertex3.position.y = (1 - vertex3.position.y) / 2.f * static_cast<float>(m_Height);
-
-				RenderTriangle(vertex1, vertex2, vertex3, pSoftwareMesh);
+			//Frustrum culling for x and y
+			if (vertex1.position.x < -1 || vertex1.position.x > 1 ||
+				vertex1.position.y < -1 || vertex1.position.y > 1) {
+				return;
 			}
+			if (vertex2.position.x < -1 || vertex2.position.x > 1 ||
+				vertex2.position.y < -1 || vertex2.position.y > 1) {
+				return;
+			}
+			if (vertex3.position.x < -1 || vertex3.position.x > 1 ||
+				vertex3.position.y < -1 || vertex3.position.y > 1) {
+				return;
+			}
+
+			//Vertices from NDC space to raster space
+			vertex1.position.x = (vertex1.position.x + 1) / 2.f * static_cast<float>(m_Width);
+			vertex1.position.y = (1 - vertex1.position.y) / 2.f * static_cast<float>(m_Height);
+
+			vertex2.position.x = (vertex2.position.x + 1) / 2.f * static_cast<float>(m_Width);
+			vertex2.position.y = (1 - vertex2.position.y) / 2.f * static_cast<float>(m_Height);
+
+			vertex3.position.x = (vertex3.position.x + 1) / 2.f * static_cast<float>(m_Width);
+			vertex3.position.y = (1 - vertex3.position.y) / 2.f * static_cast<float>(m_Height);
+
+			RenderTriangle(vertex1, vertex2, vertex3, pSoftwareMesh);
+				}
+			);
 		}
 		if (pSoftwareMesh->primitiveTopology == PrimitiveTopology::TriangleStrip) {
 			//go over all the indices one by one, every pair of 3 will be a triangle
