@@ -96,12 +96,21 @@ void Effect::Initialize()
 	// Point Sampler
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	HRESULT hr = m_pDevice->CreateSamplerState(&samplerDesc, &m_pPointSamplerState);
+	if (FAILED(hr)) {
+		throw std::runtime_error("Failed to create point sampler");
+	}
 	// Linear Sampler
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	hr = m_pDevice->CreateSamplerState(&samplerDesc, &m_pLinearSamplerState);
+	if (FAILED(hr)) {
+		throw std::runtime_error("Failed to create linear sampler");
+	}
 	// Anisotropic Sampler
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 	hr = m_pDevice->CreateSamplerState(&samplerDesc, &m_pAnisotropicSamplerState);
+	if (FAILED(hr)) {
+		throw std::runtime_error("Failed to create anisotropic sampler");
+	}
 
 	// Initially set to point
 	if (m_pPointSamplerState) {
@@ -117,12 +126,21 @@ void Effect::Initialize()
 	rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	//Back face
 	hr = m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pBackfaceCullingState);
+	if (FAILED(hr)) {
+		throw std::runtime_error("Failed to create backface culling state");
+	}
 	//Front face
 	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
 	hr = m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pFrontfaceCullingState);
+	if (FAILED(hr)) {
+		throw std::runtime_error("Failed to create frontface culling state");
+	}
 	//No culling
 	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
 	hr = m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pNoCullingState);
+	if (FAILED(hr)) {
+		throw std::runtime_error("Failed to create no culling state");
+	}
 
 	// Initially set to back face
 	if (m_pBackfaceCullingState) {
