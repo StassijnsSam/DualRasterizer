@@ -43,7 +43,7 @@ namespace dae
 		};
 
 	private:
-		bool m_CanPrintFPW{ true };
+		bool m_CanPrintFPW{ false };
 
 		SDL_Window* m_pWindow{};
 		Renderer_Software* m_pRendererSoftware{};
@@ -57,5 +57,6 @@ namespace dae
 		RenderType m_CurrentRenderType{ RenderType::Software };
 
 		void LoadMeshes();
+		void PrintInfo();
 	};
 }

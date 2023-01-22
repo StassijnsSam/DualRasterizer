@@ -32,8 +32,10 @@ namespace dae
 		float aspectRatio{};
 		float nearPlane{0.1f};
 		float farPlane{100.f};
-		const float movementSpeed{ 8.0f };
-		const float rotationSpeed{ 0.2f };
+		float movementSpeed{ 15.0f };
+		const float boostedMovementSpeed{ 25.f };
+		const float normalMovementSpeed{ 15.0f };
+		const float rotationSpeed{ 0.4f };
 
 		Matrix invViewMatrix{};
 		Matrix viewMatrix{};
@@ -78,8 +80,14 @@ namespace dae
 			//Camera Update Logic
 			const float deltaTime = pTimer->GetElapsed();
 
+			//Movementspeed set to normal
+			movementSpeed = normalMovementSpeed;
+
 			//Keyboard Input
 			const uint8_t* pKeyboardState = SDL_GetKeyboardState(nullptr);
+			if (pKeyboardState[SDL_SCANCODE_LSHIFT]) {
+				movementSpeed = boostedMovementSpeed;
+			}
 			if (pKeyboardState[SDL_SCANCODE_W]) {
 				origin += forward * movementSpeed * deltaTime;
 			}
@@ -92,8 +100,7 @@ namespace dae
 			if (pKeyboardState[SDL_SCANCODE_D]) {
 				origin += right * movementSpeed * deltaTime;
 			}
-
-
+			
 			//Mouse Input
 			int mouseX{}, mouseY{};
 			const uint32_t mouseState = SDL_GetRelativeMouseState(&mouseX, &mouseY);

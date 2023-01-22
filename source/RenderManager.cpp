@@ -24,6 +24,8 @@ namespace dae {
 		m_pRendererSoftware = new Renderer_Software(pWindow, m_pCamera, m_pMeshes);
 		m_pRendererHardware = new Renderer_Hardware(pWindow, m_pCamera, m_pMeshes);
 		m_pCurrentRenderer = m_pRendererSoftware;
+
+		PrintInfo();
 	}
 
 	RenderManager::~RenderManager()
@@ -146,6 +148,12 @@ namespace dae {
 	void RenderManager::TogglePrintFPW()
 	{
 		m_CanPrintFPW = !m_CanPrintFPW;
+		if (m_CanPrintFPW) {
+			std::cout << "Printing FPS" << std::endl;
+		}
+		else {
+			std::cout << "No longer printing FPS" << std::endl;
+		}
 	}
 
 	void RenderManager::ToggleClearColor()
@@ -204,5 +212,33 @@ namespace dae {
 		pFireTextures.push_back(pFireDiffuse);
 
 		m_pMeshes.push_back(new Mesh(fireVertices, fireIndices, translation, scale, yawRotation, pFireTextures));
+	}
+	void RenderManager::PrintInfo()
+	{
+		std::cout << "\033[33m";
+		std::cout << "[Key Bindings - SHARED]" << std::endl;
+		std::cout << "\t[F1] Toggle Rasterizer Mode (HARDWARE/SOFTWARE)" << std::endl;
+		std::cout << "\t[F2] Toggle Vehicle Rotation (ON/OFF)" << std::endl;
+		std::cout << "\t[F9] Cycle CullMode (BACK/FRONT/NONE)" << std::endl;
+		std::cout << "\t[F10] Toggle Uniform ClearColor (ON/OFF)" << std::endl;
+		std::cout << "\t[F11] Toggle Print FPS (ON/OFF)" << std::endl;
+		std::cout << std::endl;
+		std::cout << "\033[32m";
+		std::cout << "[Key Bindings - HARDWARE]" << std::endl;
+		std::cout << "\t[F3] Toggle FireFX (ON / OFF)" << std::endl;
+		std::cout << "\t[F4] Cycle Sampler State (POINT / LINEAR / ANISOTROPIC)" << std::endl;
+		std::cout << std::endl;
+		std::cout << "\033[35m";
+		std::cout << "[Key Bindings - SOFTWARE]" << std::endl;
+		std::cout << "\t[F5] Cycle Shading Mode (COMBINED / OBSERVED_AREA / DIFFUSE / SPECULAR)" << std::endl;
+		std::cout << "\t[F6] Toggle NormalMap (ON / OFF" << std::endl;
+		std::cout << "\t[F7] Toggle DepthBuffer Visualization (ON / OFF)" << std::endl;
+		std::cout << "\t[F8] Toggle BoundingBox Visualization (ON / OFF)" << std::endl;
+		std::cout << std::endl;
+		std::cout << "\033[36m";
+		std::cout << "[Extra Features]" << std::endl;
+		std::cout << "\tCPU multi-threaded (parallel_for)" << std::endl;
+		std::cout << "\033[0m"; // reset text color
+		std::cout << std::endl;
 	}
 }
