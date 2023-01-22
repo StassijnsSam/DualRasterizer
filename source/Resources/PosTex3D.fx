@@ -8,7 +8,7 @@ Texture2D gNormalMap : NormalMap;
 Texture2D gSpecularMap : SpecularMap;
 Texture2D gGlossinessMap : GlossinessMap;
 
-float3 gLightDirection = { 0.577f, -0.577f, 0.577f };
+float3 gLightDirection = { 0.577f, -0.577f, 0.557f };
 
 SamplerState gSamplerState: GlobalSamplerState;
 RasterizerState gRasterizerState : GlobalRasterizeState;
@@ -66,54 +66,63 @@ VS_OUTPUT VS(VS_INPUT input)
     output.Normal = mul(input.Normal, (float3x3)gWorldMatrix);
     output.Tangent = mul(input.Tangent, (float3x3) gWorldMatrix);
     output.WorldPosition = mul(float4(input.Position, 1.0f), gWorldMatrix);
-    
 	output.Uv = input.Uv;
+    
 	return output;
 }
 
 // Pixel shader
-float3 CalculateLambert(float kd, float3 color)
+float3 CalculateLambert(float3 color, float kd)
 {
     return mul(color, kd / PI);
 }
 
-float CalculatePhong(float3 specular, float phongExponent, float3 lightDirection, float3 viewDirection, float3 normal)
+float CalculatePhong(float3 specularColor, float phongExponent, float3 normal, VS_OUTPUT input)
 {
-    float3 r = reflect(normal, lightDirection);
-    float angle = max(0, dot(r, viewDirection));
+    float3 viewDirection = normalize(input.WorldPosition.xyz - gViewInvMatrix[3].xyz);
+    float3 r = -1 * gLightDirection - (2 * dot(normal, -1 * gLightDirection) * normal);
+    float cosA = max(0, dot(r, viewDirection));
     
-    return (specular * pow(angle, phongExponent));
+    return (specularColor * pow(cosA, phongExponent));
 }
 
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
     float3 finalColor = { 0, 0, 0 };
     
+    //Normal map calculations
+    // Get normal from normalMap
+    float3 sampledNormal = gNormalMap.Sample(gSamplerState, input.Uv).xyz;
+    sampledNormal = 2.f * sampledNormal - 1.f;
+    
     float3 binormal = normalize(cross(input.Normal, input.Tangent));
-    float3x3 tangentSpaceAxis = float3x3(normalize(input.Tangent), binormal, normalize(input.Normal));
-    
-    float3 normalMapSample = gNormalMap.Sample(gSamplerState, input.Uv).xyz;
-    normalMapSample = 2.f * normalMapSample - 1.f;
-    
-    float3 tangentSpaceNormal = normalize(mul(normalMapSample, tangentSpaceAxis));
+    float3x3 tangentSpaceAxis = float3x3(input.Tangent, binormal, input.Normal);
+  
+    sampledNormal = normalize(mul(sampledNormal, tangentSpaceAxis));
 
-    float observedArea = dot(tangentSpaceNormal, -gLightDirection);
+    float observedArea = dot(sampledNormal, -gLightDirection);
     
-    if (observedArea < 0)
+    if (observedArea <= 0)
     {
         return float4(finalColor, 1);
     }
 
-    float3 viewDirection = normalize(input.WorldPosition.xyz - gViewInvMatrix[3].xyz);
+    //Calculate lambert diffuse
+    float3 diffuseColor = gDiffuseMap.Sample(gSamplerState, input.Uv).xyz;
+    float3 lambertDiffuse = CalculateLambert(diffuseColor, 1.f);
 
-    float3 specularMapSample = gSpecularMap.Sample(gSamplerState, input.Uv).xyz;
-    float3 glossinessMapSample = gGlossinessMap.Sample(gSamplerState, input.Uv).xyz;
-    float3 diffuseMapSample = gDiffuseMap.Sample(gSamplerState, input.Uv).xyz;
-
-    float phongValue = CalculatePhong(specularMapSample, glossinessMapSample.x * SHININESS, gLightDirection, viewDirection, tangentSpaceNormal);
-    float3 diffuse = CalculateLambert(1.f, diffuseMapSample);
-
-    finalColor = (AMBIENTCOLOR + LIGHTINTENSITY * (diffuse + phongValue)) * observedArea;
+    //Calculate phong specular
+    float3 specularColor = gSpecularMap.Sample(gSamplerState, input.Uv).xyz;
+    float3 glossColor = gGlossinessMap.Sample(gSamplerState, input.Uv).xyz;
+    float glossExponent = glossColor.x;
+    glossExponent *= SHININESS;
+    
+    float phongSpecular = CalculatePhong(specularColor, glossExponent, sampledNormal, input);
+    
+    //finalColor
+    float3 lightColor = { 1, 1, 1 };
+    float3 radiance = LIGHTINTENSITY * lightColor;
+    finalColor = (AMBIENTCOLOR + radiance * (lambertDiffuse) + phongSpecular) * observedArea;
 
     return float4(finalColor, 1);
 }
